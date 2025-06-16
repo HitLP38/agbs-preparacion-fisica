@@ -225,7 +225,7 @@ const SimuladorPrueba: React.FC = () => {
         </div>
       )}
 
-      {/* RESULTADO */}
+      {/* RESULTADO COMPLETO */}
       {calificacion && (
         <div
           style={{
@@ -234,18 +234,37 @@ const SimuladorPrueba: React.FC = () => {
             borderColor: calificacion.esApto ? "#c3e6cb" : "#f5c6cb",
           }}
         >
-          <h2 style={styles.resultTitle}>📊 Resultado</h2>
+          <h2 style={styles.resultTitle}>📊 Resultado Completo</h2>
+
           <div style={styles.resultItem}>
             <strong>Ejercicio:</strong> {calificacion.ejercicio}
           </div>
+
           <div style={styles.resultItem}>
             <strong>Tu resultado:</strong> {calificacion.resultado}{" "}
             {calificacion.unidad}
           </div>
+
           <div style={styles.resultItem}>
             <strong>Marca mínima:</strong> {calificacion.marcaMinima}{" "}
             {calificacion.unidad}
           </div>
+
+          {/* NUEVOS CAMPOS DE PUNTUACIÓN */}
+          <div style={styles.resultItem}>
+            <strong>Puntos obtenidos:</strong>{" "}
+            <span style={styles.puntos}>
+              {(calificacion as any).puntos || 0} puntos
+            </span>
+          </div>
+
+          <div style={styles.resultItem}>
+            <strong>Nota final:</strong>{" "}
+            <span style={styles.nota}>
+              {(calificacion as any).notaTexto || "Sin nota"}
+            </span>
+          </div>
+
           <div
             style={{
               ...styles.calificacionFinal,
@@ -254,7 +273,13 @@ const SimuladorPrueba: React.FC = () => {
           >
             <strong>CALIFICACIÓN: {calificacion.calificacion}</strong>
           </div>
+
           <div style={styles.mensaje}>{calificacion.mensaje}</div>
+
+          <div style={styles.diferencia}>
+            Diferencia: {calificacion.diferencia.toFixed(1)}{" "}
+            {calificacion.unidad}
+          </div>
         </div>
       )}
 
@@ -267,29 +292,37 @@ const SimuladorPrueba: React.FC = () => {
   );
 };
 
-// Estilos
+// ===================================================================
+// ESTILOS CSS-IN-JS RESPONSIVE
+// ===================================================================
+
 const styles = {
   container: {
-    maxWidth: "600px",
-    margin: "0 auto",
-    padding: "20px",
+    width: "100%",
+    maxWidth: "none",
+    margin: "0",
+    padding: "1rem",
     fontFamily: "Arial, sans-serif",
+    minHeight: "100vh",
   },
   title: {
     textAlign: "center" as const,
     color: "#2c3e50",
     marginBottom: "30px",
+    fontSize: "clamp(1.5rem, 4vw, 2.5rem)",
   },
   formSection: {
     backgroundColor: "white",
-    padding: "20px",
+    padding: "clamp(15px, 3vw, 25px)",
     borderRadius: "8px",
     marginBottom: "20px",
     boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+    width: "100%",
   },
   sectionTitle: {
     color: "#34495e",
     marginBottom: "15px",
+    fontSize: "clamp(1rem, 3vw, 1.25rem)",
   },
   inputGroup: {
     marginBottom: "15px",
@@ -299,20 +332,22 @@ const styles = {
     marginBottom: "5px",
     fontWeight: "bold" as const,
     color: "#555",
+    fontSize: "clamp(0.9rem, 2.5vw, 1rem)",
   },
   select: {
     width: "100%",
-    padding: "10px",
+    padding: "clamp(8px, 2vw, 12px)",
     border: "1px solid #ddd",
     borderRadius: "4px",
-    fontSize: "16px",
+    fontSize: "clamp(14px, 3vw, 16px)",
+    backgroundColor: "white",
   },
   input: {
     width: "100%",
-    padding: "10px",
+    padding: "clamp(8px, 2vw, 12px)",
     border: "1px solid #ddd",
     borderRadius: "4px",
-    fontSize: "16px",
+    fontSize: "clamp(14px, 3vw, 16px)",
   },
   timeInputGroup: {
     marginBottom: "15px",
@@ -321,22 +356,23 @@ const styles = {
     display: "flex",
     alignItems: "center",
     gap: "10px",
+    justifyContent: "center",
   },
   timeInput: {
-    width: "80px",
-    padding: "10px",
+    width: "clamp(60px, 15vw, 80px)",
+    padding: "clamp(8px, 2vw, 12px)",
     border: "1px solid #ddd",
     borderRadius: "4px",
-    fontSize: "16px",
+    fontSize: "clamp(14px, 3vw, 16px)",
     textAlign: "center" as const,
   },
   timeSeparator: {
-    fontSize: "20px",
+    fontSize: "clamp(16px, 4vw, 20px)",
     fontWeight: "bold" as const,
   },
   infoSection: {
     backgroundColor: "#e8f4f8",
-    padding: "15px",
+    padding: "clamp(12px, 3vw, 18px)",
     borderRadius: "8px",
     marginBottom: "20px",
     border: "1px solid #bee5eb",
@@ -344,58 +380,83 @@ const styles = {
   infoTitle: {
     color: "#0c5460",
     marginBottom: "10px",
+    fontSize: "clamp(1rem, 3vw, 1.1rem)",
   },
   marcaMinima: {
     color: "#007bff",
     fontWeight: "bold" as const,
-    fontSize: "18px",
+    fontSize: "clamp(16px, 4vw, 18px)",
   },
   calculateButton: {
     backgroundColor: "#007bff",
     color: "white",
-    padding: "12px 24px",
+    padding: "clamp(10px, 3vw, 15px) clamp(20px, 5vw, 30px)",
     border: "none",
     borderRadius: "6px",
-    fontSize: "16px",
+    fontSize: "clamp(14px, 3vw, 16px)",
     cursor: "pointer",
     width: "100%",
+    transition: "background-color 0.3s ease",
   },
   resultSection: {
-    padding: "20px",
+    padding: "clamp(15px, 4vw, 25px)",
     borderRadius: "8px",
     marginBottom: "20px",
     border: "1px solid",
+    width: "100%",
   },
   resultTitle: {
     marginBottom: "15px",
     color: "#2c3e50",
+    fontSize: "clamp(1.1rem, 3vw, 1.3rem)",
   },
   resultItem: {
-    marginBottom: "10px",
-    fontSize: "16px",
+    marginBottom: "12px",
+    fontSize: "clamp(14px, 3vw, 16px)",
+    lineHeight: "1.4",
   },
   calificacionFinal: {
-    fontSize: "24px",
+    fontSize: "clamp(18px, 5vw, 24px)",
     textAlign: "center" as const,
     margin: "20px 0",
-    padding: "10px",
+    padding: "clamp(8px, 2vw, 12px)",
     border: "2px solid currentColor",
     borderRadius: "8px",
+    fontWeight: "bold" as const,
   },
   mensaje: {
-    fontSize: "16px",
+    fontSize: "clamp(14px, 3vw, 16px)",
     textAlign: "center" as const,
     marginBottom: "10px",
+    fontWeight: "500" as const,
+  },
+  diferencia: {
+    fontSize: "clamp(12px, 2.5vw, 14px)",
+    color: "#666",
+    textAlign: "center" as const,
+    marginTop: "10px",
   },
   newTestButton: {
     backgroundColor: "#28a745",
     color: "white",
-    padding: "12px 24px",
+    padding: "clamp(10px, 3vw, 15px) clamp(20px, 5vw, 30px)",
     border: "none",
     borderRadius: "6px",
-    fontSize: "16px",
+    fontSize: "clamp(14px, 3vw, 16px)",
     cursor: "pointer",
     width: "100%",
+    transition: "background-color 0.3s ease",
+  },
+  // NUEVOS ESTILOS PARA PUNTUACIÓN
+  puntos: {
+    color: "#007bff",
+    fontWeight: "bold" as const,
+    fontSize: "clamp(16px, 4vw, 18px)",
+  },
+  nota: {
+    color: "#28a745",
+    fontWeight: "bold" as const,
+    fontSize: "clamp(16px, 4vw, 18px)",
   },
 };
 

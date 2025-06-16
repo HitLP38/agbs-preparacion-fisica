@@ -47,3 +47,19 @@ export interface ParametrosUsuario {
   grado: Grado;
   ejercicio: TipoEjercicio;
 }
+export interface ResultadoEjercicio {
+  ejercicio: string;
+  resultado: number;
+  marcaMinima: number;
+  unidad: string;
+  calificacion: Calificacion;
+  esApto: boolean;
+  diferencia: number;
+  mensaje: string;
+  fecha: string;
+  error?: boolean;
+  // NUEVOS CAMPOS
+  puntos?: number;
+  nota?: number;
+  notaTexto?: string;
+}

@@ -179,3 +179,206 @@ export const segundosATiempo = (segundosTotales: number) => {
     formato: `${minutos}:${segundos.toString().padStart(2, "0")}`,
   };
 };
+// ===================================================================
+// SISTEMA DE PUNTUACIÓN NUMÉRICA SEGÚN PDF OFICIAL
+// ===================================================================
+
+export const TABLA_PUNTUACION = {
+  [EJERCICIOS.SALTO_VERTICAL]: {
+    // Hombres - Salto Vertical
+    H: {
+      // Tabla de puntos por centímetros (ejemplo basado en PDF)
+      70: 40,
+      69: 38,
+      68: 36,
+      67: 34,
+      66: 32,
+      65: 30,
+      64: 28,
+      63: 26,
+      62: 24,
+      61: 22,
+      60: 20,
+      59: 18,
+      58: 16,
+      57: 14,
+      56: 12,
+      55: 10,
+      54: 8,
+      53: 6,
+      52: 4,
+      51: 2,
+      50: 1,
+      49: 1,
+      48: 1,
+      47: 1,
+      46: 1,
+      45: 1,
+      44: 1,
+      43: 1,
+      42: 1,
+    },
+    // Mujeres - Salto Vertical
+    M: {
+      64: 40,
+      63: 38,
+      62: 36,
+      61: 34,
+      60: 32,
+      59: 30,
+      58: 28,
+      57: 26,
+      56: 24,
+      55: 22,
+      54: 20,
+      53: 18,
+      52: 16,
+      51: 14,
+      50: 12,
+      49: 10,
+      48: 8,
+      47: 6,
+      46: 4,
+      45: 2,
+      44: 1,
+      43: 1,
+      42: 1,
+      41: 1,
+      40: 1,
+      39: 1,
+      38: 1,
+      37: 1,
+      36: 1,
+    },
+  },
+
+  [EJERCICIOS.FLEXIONES]: {
+    // Hombres - Flexiones
+    H: {
+      60: 40,
+      59: 38,
+      58: 36,
+      57: 34,
+      56: 32,
+      55: 30,
+      54: 28,
+      53: 26,
+      52: 24,
+      51: 22,
+      50: 20,
+      49: 18,
+      48: 16,
+      47: 14,
+      46: 12,
+      45: 10,
+      44: 8,
+      43: 6,
+      42: 4,
+      41: 2,
+      40: 1,
+      39: 1,
+      38: 1,
+      37: 1,
+      36: 1,
+      35: 1,
+      34: 1,
+      33: 1,
+      32: 1,
+      31: 1,
+      30: 1,
+      29: 1,
+      28: 1,
+      27: 1,
+      26: 1,
+      25: 1,
+      24: 1,
+      23: 1,
+      22: 1,
+    },
+    // Mujeres - Flexiones
+    M: {
+      54: 40,
+      53: 38,
+      52: 36,
+      51: 34,
+      50: 32,
+      49: 30,
+      48: 28,
+      47: 26,
+      46: 24,
+      45: 22,
+      44: 20,
+      43: 18,
+      42: 16,
+      41: 14,
+      40: 12,
+      39: 10,
+      38: 8,
+      37: 6,
+      36: 4,
+      35: 2,
+      34: 1,
+      33: 1,
+      32: 1,
+      31: 1,
+      30: 1,
+      29: 1,
+      28: 1,
+      27: 1,
+      26: 1,
+      25: 1,
+      24: 1,
+      23: 1,
+      22: 1,
+      21: 1,
+      20: 1,
+      19: 1,
+      18: 1,
+      17: 1,
+      16: 1,
+    },
+  },
+  // ... más ejercicios según necesites
+};
+
+/**
+ * Calcula puntuación numérica según tablas oficiales
+ */
+export const calcularPuntuacion = (
+  ejercicio: TipoEjercicio,
+  resultado: number,
+  sexo: Sexo
+): number => {
+  const tabla = TABLA_PUNTUACION[ejercicio]?.[sexo];
+  if (!tabla) return 0;
+
+  // Buscar puntuación exacta o la más cercana inferior
+  const marcas = Object.keys(tabla)
+    .map(Number)
+    .sort((a, b) => b - a);
+
+  for (const marca of marcas) {
+    if (resultado >= marca) {
+      return tabla[marca];
+    }
+  }
+
+  return 0; // No alcanza puntuación mínima
+};
+
+/**
+ * Convierte puntos a nota (5.0 - 10.0)
+ */
+export const puntosANota = (puntos: number): number => {
+  // Según tabla de transformación del PDF
+  if (puntos >= 240) return 10.0;
+  if (puntos >= 200) return 9.0;
+  if (puntos >= 160) return 8.0;
+  if (puntos >= 120) return 7.0;
+  if (puntos >= 80) return 6.0;
+  if (puntos >= 40) return 5.5;
+  if (puntos >= 20) return 5.2;
+  if (puntos >= 10) return 5.1;
+  if (puntos >= 5) return 5.0;
+  return 0; // Insuficiente
+};
