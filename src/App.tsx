@@ -1,35 +1,30 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from "react";
+import SimuladorPrueba from "./components/forms/SimuladorPrueba";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
+    <div className="App">
+      <header className="App-header">
+        <h1>🎖️ AGBS - Preparación Física</h1>
+        <p>Academia General Básica de Suboficiales</p>
+        <p>Sistema de Simulación de Pruebas Físicas</p>
+      </header>
+
+      <main>
+        <SimuladorPrueba />
+      </main>
+
+      <footer className="App-footer">
         <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
+          📚 Trabajo de Fin de Ciclo - Administración de Sistemas Informáticos
+          en Red
         </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+        <p>🏫 Academia Logística de Calatayud - Promoción LI</p>
+        <p>👨‍💻 Desarrollado por: Diego Borrallo Lorenzo - 2025</p>
+      </footer>
+    </div>
+  );
 }
 
-export default App
+export default App;
