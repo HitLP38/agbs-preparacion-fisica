@@ -1,6 +1,4 @@
-import React from "react";
-import SimuladorPrueba from "./components/forms/SimuladorPrueba";
-import "./App.css";
+import React from 'react';
 
 function App() {
   return (
@@ -11,9 +9,7 @@ function App() {
         <p>Sistema de Simulación de Pruebas Físicas</p>
       </header>
 
-      <main>
-        <SimuladorPrueba />
-      </main>
+      <main></main>
 
       <footer className="App-footer">
         <p>

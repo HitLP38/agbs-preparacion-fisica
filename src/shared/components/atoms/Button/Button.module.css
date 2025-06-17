@@ -1,0 +1,43 @@
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Hover states que no se pueden hacer inline */
+.button:hover:not(:disabled):not([aria-busy='true']) {
+  transform: translateY(-1px);
+}
+
+.button:active:not(:disabled):not([aria-busy='true']) {
+  transform: translateY(0);
+}
+
+.button:focus {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+/* Estados específicos por variante */
+.button--primary:hover:not(:disabled):not([aria-busy='true']) {
+  background-color: var(--color-primary-600);
+}
+
+.button--secondary:hover:not(:disabled):not([aria-busy='true']) {
+  background-color: var(--color-secondary-50);
+}
+
+.button--success:hover:not(:disabled):not([aria-busy='true']) {
+  background-color: var(--color-success-dark);
+}
+
+.button--warning:hover:not(:disabled):not([aria-busy='true']) {
+  background-color: #b45309;
+}
+
+.button--error:hover:not(:disabled):not([aria-busy='true']) {
+  background-color: var(--color-error-dark);
+}
