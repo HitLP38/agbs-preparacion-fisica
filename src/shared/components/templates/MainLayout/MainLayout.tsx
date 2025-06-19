@@ -1,5 +1,6 @@
+// src/shared/components/templates/MainLayout/MainLayout.tsx - CORREGIDO
 import React, { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'; // ← AGREGAR IMPORTS
 import { Box } from '@mui/material';
 import { CustomAppBar } from '../../organisms/AppBar/AppBar';
 import { NavigationDrawer } from '../../organisms/Drawer/NavigationDrawer';
@@ -17,7 +18,7 @@ export const MainLayout: React.FC = () => {
   };
 
   const handlePageChange = (page: string) => {
-    // La navegación ahora se maneja dentro del AppBar y Drawer
+    navigate(`/app/${page}`); // ← CORREGIR: navegar a la página
     setDrawerOpen(false);
   };
 
@@ -30,7 +31,7 @@ export const MainLayout: React.FC = () => {
       <NavigationDrawer
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
-        currentPage="dashboard"
+        currentPage={currentPage} // ← CORREGIR: usar la variable real
         onPageChange={handlePageChange}
       />
 
@@ -44,9 +45,6 @@ export const MainLayout: React.FC = () => {
           pt: '112px', // Espacio para los dos AppBars (64px + 48px)
         }}
       >
-        {' '}
-        {/* Espaciador para el AppBar fijo */}
-        <Toolbar />
         {/* Contenido de la página */}
         <Box sx={{ p: 3 }}>
           <Outlet />
