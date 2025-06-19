@@ -15,6 +15,7 @@ import {
   ArrowForward,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { OptimizedImage } from '../shared/components/atoms/OptimizedImage/OptimizedImage';
 
 export const LandingPage: React.FC = () => {
   const theme = useTheme();
@@ -25,16 +26,22 @@ export const LandingPage: React.FC = () => {
       icon: <DashboardIcon sx={{ fontSize: 40 }} />,
       title: 'Dashboard',
       description: 'Visualiza tu progreso y estadísticas',
+      image:
+        'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=300&h=200&fit=crop&q=80',
     },
     {
       icon: <FitnessCenterIcon sx={{ fontSize: 40 }} />,
       title: 'Ejercicios',
       description: 'Simula las pruebas físicas oficiales',
+      image:
+        'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=200&fit=crop&q=80',
     },
     {
       icon: <HistoryIcon sx={{ fontSize: 40 }} />,
       title: 'Historial',
       description: 'Revisa tus simulaciones anteriores',
+      image:
+        'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=300&h=200&fit=crop&q=80',
     },
   ];
 
@@ -95,24 +102,16 @@ export const LandingPage: React.FC = () => {
             </Button>
           </Box>
 
-          {/* Imagen/Ilustración */}
+          {/* Imagen Hero */}
           <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
-            <Box
-              sx={{
-                width: '100%',
-                maxWidth: 400,
-                height: 300,
-                background: `linear-gradient(135deg, ${theme.palette.primary.light} 0%, ${theme.palette.primary.main} 100%)`,
-                borderRadius: 4,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'white',
-                fontSize: '4rem',
-              }}
-            >
-              🏃‍♂️🎖️💪
-            </Box>
+            <OptimizedImage
+              src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&h=400&fit=crop&q=80"
+              alt="Entrenamiento físico AGBS"
+              width="100%"
+              height={400}
+              borderRadius={4}
+              objectFit="cover"
+            />
           </Box>
         </Box>
       </Container>
@@ -141,14 +140,21 @@ export const LandingPage: React.FC = () => {
                 <Card
                   sx={{
                     height: '100%',
-                    textAlign: 'center',
                     transition: 'transform 0.3s ease-in-out',
                     '&:hover': {
                       transform: 'translateY(-8px)',
                     },
                   }}
                 >
-                  <CardContent sx={{ p: 4 }}>
+                  {/* Imagen de la feature */}
+                  <OptimizedImage
+                    src={feature.image}
+                    alt={feature.title}
+                    height={200}
+                    objectFit="cover"
+                  />
+
+                  <CardContent sx={{ p: 3, textAlign: 'center' }}>
                     <Box sx={{ color: 'primary.main', mb: 2 }}>
                       {feature.icon}
                     </Box>

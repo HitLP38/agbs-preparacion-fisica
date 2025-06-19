@@ -24,26 +24,28 @@ import {
   DarkMode,
   Person,
 } from '@mui/icons-material';
-import { useCustomTheme } from '@shared/theme/ThemeProvider';
+import { useCustomTheme } from '../../../theme/ThemeProvider';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 interface AppBarProps {
   onMenuClick: () => void;
-  currentPage: string;
 }
 
-export const CustomAppBar: React.FC<AppBarProps> = ({
-  onMenuClick,
-  currentPage,
-}) => {
+export const CustomAppBar: React.FC<AppBarProps> = ({ onMenuClick }) => {
   const theme = useTheme();
   const { isDarkMode, toggleTheme } = useCustomTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const navigate = useNavigate();
+  const location = useLocation();
 
   // Estados para menús
   const [profileMenuAnchor, setProfileMenuAnchor] =
     useState<null | HTMLElement>(null);
   const [settingsMenuAnchor, setSettingsMenuAnchor] =
     useState<null | HTMLElement>(null);
+
+  // Extraer página actual
+  const currentPage = location.pathname.split('/').pop() || 'dashboard';
 
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setProfileMenuAnchor(event.currentTarget);
@@ -68,17 +70,29 @@ export const CustomAppBar: React.FC<AppBarProps> = ({
     { label: 'Historial', icon: <HistoryIcon />, key: 'historial' },
   ];
 
+  const handleNavigation = (page: string) => {
+    navigate(`/app/${page}`);
+  };
+
   return (
     <>
-      <AppBar position="fixed" elevation={1}>
-        <Toolbar sx={{ justifyContent: 'space-between' }}>
-          {/* Lado izquierdo - Logo + Navegación */}
+      {/* Header principal con fondo E9EEED */}
+      <AppBar
+        position="fixed"
+        elevation={0}
+        sx={{
+          backgroundColor: '#E9EEED', // Tu color secundario
+          borderBottom: '1px solid #D0D4D2',
+        }}
+      >
+        <Toolbar sx={{ justifyContent: 'space-between', py: 1 }}>
+          {/* Lado izquierdo - Logo + Nombre */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             {/* Menú hamburguesa (móvil) */}
             {isMobile && (
               <IconButton
                 edge="start"
-                color="inherit"
+                sx={{ color: '#2E3E50' }}
                 aria-label="menu"
                 onClick={onMenuClick}
               >
@@ -86,20 +100,20 @@ export const CustomAppBar: React.FC<AppBarProps> = ({
               </IconButton>
             )}
 
-            {/* Logo */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {/* Logo + Nombre */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
               <Box
                 sx={{
-                  width: 32,
-                  height: 32,
+                  width: 36,
+                  height: 36,
                   background:
                     'linear-gradient(135deg, #2E3E50 0%, #4A5D75 100%)',
-                  borderRadius: 1,
+                  borderRadius: 1.5,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   color: 'white',
-                  fontSize: '1.2rem',
+                  fontSize: '1.3rem',
                 }}
               >
                 🎖️
@@ -109,48 +123,17 @@ export const CustomAppBar: React.FC<AppBarProps> = ({
                 component="div"
                 sx={{
                   fontWeight: 700,
-                  color: 'primary.main',
+                  color: '#2E3E50', // Tu color primario
+                  fontSize: '1.2rem',
                   display: { xs: 'none', sm: 'block' },
                 }}
               >
                 RetoAGBS
               </Typography>
             </Box>
-
-            {/* Navegación principal (desktop) */}
-            {!isMobile && (
-              <Box sx={{ display: 'flex', gap: 1, ml: 3 }}>
-                {navigationItems.map((item) => (
-                  <Button
-                    key={item.key}
-                    startIcon={item.icon}
-                    sx={{
-                      color:
-                        currentPage === item.key
-                          ? 'primary.main'
-                          : 'text.secondary',
-                      fontWeight: currentPage === item.key ? 600 : 400,
-                      backgroundColor:
-                        currentPage === item.key
-                          ? 'primary.light'
-                          : 'transparent',
-                      '&:hover': {
-                        backgroundColor: 'primary.light',
-                        color: 'primary.main',
-                      },
-                      borderRadius: 2,
-                      px: 2,
-                      py: 1,
-                    }}
-                  >
-                    {item.label}
-                  </Button>
-                ))}
-              </Box>
-            )}
           </Box>
 
-          {/* Lado derecho - Utilidades */}
+          {/* Lado derecho - Utilidades + Perfil */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             {/* Toggle tema */}
             <Tooltip
@@ -158,41 +141,120 @@ export const CustomAppBar: React.FC<AppBarProps> = ({
                 isDarkMode ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'
               }
             >
-              <IconButton onClick={toggleTheme} color="inherit">
+              <IconButton onClick={toggleTheme} sx={{ color: '#2E3E50' }}>
                 {isDarkMode ? <LightMode /> : <DarkMode />}
               </IconButton>
             </Tooltip>
 
             {/* Ayuda */}
             <Tooltip title="Ayuda">
-              <IconButton color="inherit">
+              <IconButton sx={{ color: '#2E3E50' }}>
                 <HelpIcon />
               </IconButton>
             </Tooltip>
 
             {/* Configuraciones */}
             <Tooltip title="Configuraciones">
-              <IconButton color="inherit" onClick={handleSettingsMenuOpen}>
+              <IconButton
+                sx={{ color: '#2E3E50' }}
+                onClick={handleSettingsMenuOpen}
+              >
                 <SettingsIcon />
               </IconButton>
             </Tooltip>
 
-            {/* Perfil */}
-            <Tooltip title="Perfil">
-              <IconButton onClick={handleProfileMenuOpen}>
-                <Avatar
+            {/* Perfil + Nombre */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 1 }}>
+              <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+                <Typography
+                  variant="body2"
                   sx={{
-                    width: 32,
-                    height: 32,
-                    bgcolor: 'primary.main',
+                    color: '#2E3E50',
+                    fontWeight: 500,
                     fontSize: '0.9rem',
                   }}
                 >
-                  U
-                </Avatar>
-              </IconButton>
-            </Tooltip>
+                  Nombre
+                </Typography>
+              </Box>
+              <Tooltip title="Perfil">
+                <IconButton onClick={handleProfileMenuOpen}>
+                  <Avatar
+                    sx={{
+                      width: 32,
+                      height: 32,
+                      bgcolor: '#2E3E50',
+                      fontSize: '0.9rem',
+                    }}
+                  >
+                    N
+                  </Avatar>
+                </IconButton>
+              </Tooltip>
+            </Box>
           </Box>
+        </Toolbar>
+      </AppBar>
+
+      {/* Barra de navegación con fondo 2E3E50 */}
+      <AppBar
+        position="fixed"
+        elevation={1}
+        sx={{
+          top: 64, // Debajo del header principal
+          backgroundColor: '#2E3E50', // Tu color primario
+          zIndex: theme.zIndex.appBar - 1,
+        }}
+      >
+        <Toolbar sx={{ minHeight: '48px !important', px: 3 }}>
+          {/* Navegación principal (desktop) */}
+          {!isMobile && (
+            <Box sx={{ display: 'flex', gap: 0.5 }}>
+              {navigationItems.map((item) => (
+                <Button
+                  key={item.key}
+                  startIcon={item.icon}
+                  onClick={() => handleNavigation(item.key)}
+                  sx={{
+                    color:
+                      currentPage === item.key
+                        ? '#FFFFFF'
+                        : 'rgba(255, 255, 255, 0.7)',
+                    fontWeight: currentPage === item.key ? 600 : 400,
+                    backgroundColor:
+                      currentPage === item.key
+                        ? 'rgba(255, 255, 255, 0.1)'
+                        : 'transparent',
+                    '&:hover': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                      color: '#FFFFFF',
+                    },
+                    borderRadius: 1.5,
+                    px: 2,
+                    py: 0.5,
+                    fontSize: '0.9rem',
+                  }}
+                >
+                  {item.label}
+                </Button>
+              ))}
+            </Box>
+          )}
+
+          {/* En móvil, mostrar solo la página actual */}
+          {isMobile && (
+            <Typography
+              variant="body1"
+              sx={{
+                color: 'white',
+                fontWeight: 500,
+                textTransform: 'capitalize',
+              }}
+            >
+              {navigationItems.find((item) => item.key === currentPage)
+                ?.label || 'Dashboard'}
+            </Typography>
+          )}
         </Toolbar>
       </AppBar>
 
@@ -205,15 +267,15 @@ export const CustomAppBar: React.FC<AppBarProps> = ({
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem>
+        <MenuItem onClick={() => navigate('/app/perfil')}>
           <Person sx={{ mr: 1 }} />
           Mi Perfil
         </MenuItem>
-        <MenuItem>
+        <MenuItem onClick={() => navigate('/app/historial')}>
           <HistoryIcon sx={{ mr: 1 }} />
           Mi Progreso
         </MenuItem>
-        <MenuItem>
+        <MenuItem onClick={() => navigate('/app/configuraciones')}>
           <SettingsIcon sx={{ mr: 1 }} />
           Configuración
         </MenuItem>
@@ -236,11 +298,11 @@ export const CustomAppBar: React.FC<AppBarProps> = ({
           )}
           {isDarkMode ? 'Tema Claro' : 'Tema Oscuro'}
         </MenuItem>
-        <MenuItem>
+        <MenuItem onClick={() => navigate('/app/ayuda')}>
           <HelpIcon sx={{ mr: 1 }} />
           Centro de Ayuda
         </MenuItem>
-        <MenuItem>
+        <MenuItem onClick={() => navigate('/app/configuraciones')}>
           <SettingsIcon sx={{ mr: 1 }} />
           Configuraciones Avanzadas
         </MenuItem>
