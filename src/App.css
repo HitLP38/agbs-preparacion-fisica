@@ -239,25 +239,84 @@ section h2 {
   .app-header h1 {
     font-size: 2rem;
   }
-  
+
   .config-row {
     grid-template-columns: 1fr;
   }
-  
+
   .exercises-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .exercise-result {
     flex-direction: column;
     align-items: stretch;
     gap: 0.5rem;
   }
-  
+
   .exercise-values {
     justify-content: space-between;
     flex-wrap: wrap;
   }
 }
-Improve
-Explain
+
+/* Mejoras para el grid de ejercicios */
+.exercises-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .exercises-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.results-summary {
+  margin-bottom: 2rem;
+}
+
+.global-result {
+  text-align: center;
+  padding: 2rem;
+  border-radius: 12px;
+  border: 3px solid;
+}
+
+.global-result.apto {
+  background: #dcfce7;
+  border-color: #16a34a;
+  color: #14532d;
+}
+
+.global-result.no-apto {
+  background: #fee2e2;
+  border-color: #dc2626;
+  color: #991b1b;
+}
+
+.exercise-result {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  background: #f8fafc;
+}
+*/
+
+/* Nuevos estilos para mejor espaciado */
+.results-section {
+  margin-top: 2rem;
+}
+
+.results-section h2 {
+  margin-bottom: 2rem;
+}
+
+/* Responsive para cards */
+@media (max-width: 768px) {
+  /* Los cards ya son responsive por defecto */
+}

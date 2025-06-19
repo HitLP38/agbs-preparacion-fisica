@@ -1,3 +1,6 @@
+// ============================================
+// src/shared/components/atoms/Select/Select.tsx
+// ============================================
 import React, { useState, forwardRef } from 'react';
 import { tokens } from '@shared/styles/tokens';
 
