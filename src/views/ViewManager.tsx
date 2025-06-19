@@ -3,6 +3,7 @@ import { Box } from '@mui/material';
 
 // Tipos de vistas disponibles
 export type ViewType =
+  | 'home'
   | 'dashboard'
   | 'exercises'
   | 'history'

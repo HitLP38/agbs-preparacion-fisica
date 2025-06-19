@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 import {
   Menu as MenuIcon,
+  Home as HomeIcon,
   Dashboard as DashboardIcon,
   FitnessCenter as FitnessCenterIcon,
   History as HistoryIcon,
@@ -63,8 +64,9 @@ export const CustomAppBarSPA: React.FC<AppBarSPAProps> = ({
     setSettingsMenuAnchor(null);
   };
 
-  // Navegación principal (para desktop)
+  // Navegación principal ACTUALIZADA con Home primero
   const navigationItems = [
+    { label: 'Home', icon: <HomeIcon />, key: 'home' },
     { label: 'Dashboard', icon: <DashboardIcon />, key: 'dashboard' },
     { label: 'Ejercicios', icon: <FitnessCenterIcon />, key: 'exercises' },
     { label: 'Historial', icon: <HistoryIcon />, key: 'history' },
@@ -101,7 +103,15 @@ export const CustomAppBarSPA: React.FC<AppBarSPAProps> = ({
             )}
 
             {/* Logo + Nombre */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1.5,
+                cursor: 'pointer',
+              }}
+              onClick={() => handleNavigation('home')}
+            >
               <Box
                 sx={{
                   width: 36,
@@ -255,7 +265,7 @@ export const CustomAppBarSPA: React.FC<AppBarSPAProps> = ({
               }}
             >
               {navigationItems.find((item) => item.key === currentView)
-                ?.label || 'Dashboard'}
+                ?.label || 'Home'}
             </Typography>
           )}
         </Toolbar>

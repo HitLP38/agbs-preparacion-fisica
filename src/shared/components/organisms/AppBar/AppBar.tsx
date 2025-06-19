@@ -1,3 +1,6 @@
+// ============================================
+// src/shared/components/organisms/AppBar/AppBar.tsx - ACTUALIZADO PARA SPA
+// ============================================
 import React, { useState } from 'react';
 import {
   AppBar,
@@ -26,13 +29,22 @@ import {
 } from '@mui/icons-material';
 import { useCustomTheme } from '../../../theme/ThemeProvider';
 
-interface AppBarSPAProps {
+// Importar el tipo desde el App principal
+export type ViewType =
+  | 'dashboard'
+  | 'ejercicios'
+  | 'historial'
+  | 'perfil'
+  | 'configuraciones'
+  | 'ayuda';
+
+interface AppBarProps {
   onMenuClick: () => void;
-  currentView: string;
-  onViewChange: (view: string) => void;
+  currentView: ViewType;
+  onViewChange: (view: ViewType) => void;
 }
 
-export const CustomAppBarSPA: React.FC<AppBarSPAProps> = ({
+export const CustomAppBar: React.FC<AppBarProps> = ({
   onMenuClick,
   currentView,
   onViewChange,
@@ -63,16 +75,20 @@ export const CustomAppBarSPA: React.FC<AppBarSPAProps> = ({
     setSettingsMenuAnchor(null);
   };
 
-  // Navegación principal (para desktop)
+  // Navegación principal
   const navigationItems = [
-    { label: 'Dashboard', icon: <DashboardIcon />, key: 'dashboard' },
-    { label: 'Ejercicios', icon: <FitnessCenterIcon />, key: 'exercises' },
-    { label: 'Historial', icon: <HistoryIcon />, key: 'history' },
+    {
+      label: 'Dashboard',
+      icon: <DashboardIcon />,
+      key: 'dashboard' as ViewType,
+    },
+    {
+      label: 'Ejercicios',
+      icon: <FitnessCenterIcon />,
+      key: 'ejercicios' as ViewType,
+    },
+    { label: 'Historial', icon: <HistoryIcon />, key: 'historial' as ViewType },
   ];
-
-  const handleNavigation = (view: string) => {
-    onViewChange(view);
-  };
 
   return (
     <>
@@ -81,8 +97,9 @@ export const CustomAppBarSPA: React.FC<AppBarSPAProps> = ({
         position="fixed"
         elevation={0}
         sx={{
-          backgroundColor: '#E9EEED',
+          backgroundColor: '#E9EEED', // Tu color secundario
           borderBottom: '1px solid #D0D4D2',
+          zIndex: theme.zIndex.appBar,
         }}
       >
         <Toolbar sx={{ justifyContent: 'space-between', py: 1 }}>
@@ -150,7 +167,7 @@ export const CustomAppBarSPA: React.FC<AppBarSPAProps> = ({
             <Tooltip title="Ayuda">
               <IconButton
                 sx={{ color: '#2E3E50' }}
-                onClick={() => handleNavigation('help')}
+                onClick={() => onViewChange('ayuda')}
               >
                 <HelpIcon />
               </IconButton>
@@ -177,7 +194,7 @@ export const CustomAppBarSPA: React.FC<AppBarSPAProps> = ({
                     fontSize: '0.9rem',
                   }}
                 >
-                  Usuario
+                  Nombre
                 </Typography>
               </Box>
               <Tooltip title="Perfil">
@@ -190,7 +207,7 @@ export const CustomAppBarSPA: React.FC<AppBarSPAProps> = ({
                       fontSize: '0.9rem',
                     }}
                   >
-                    U
+                    N
                   </Avatar>
                 </IconButton>
               </Tooltip>
@@ -204,7 +221,7 @@ export const CustomAppBarSPA: React.FC<AppBarSPAProps> = ({
         position="fixed"
         elevation={1}
         sx={{
-          top: 64,
+          top: 64, // Debajo del header principal
           backgroundColor: '#2E3E50',
           zIndex: theme.zIndex.appBar - 1,
         }}
@@ -217,7 +234,7 @@ export const CustomAppBarSPA: React.FC<AppBarSPAProps> = ({
                 <Button
                   key={item.key}
                   startIcon={item.icon}
-                  onClick={() => handleNavigation(item.key)}
+                  onClick={() => onViewChange(item.key)}
                   sx={{
                     color:
                       currentView === item.key
@@ -261,7 +278,7 @@ export const CustomAppBarSPA: React.FC<AppBarSPAProps> = ({
         </Toolbar>
       </AppBar>
 
-      {/* Menú de perfil */}
+      {/* Menús desplegables */}
       <Menu
         anchorEl={profileMenuAnchor}
         open={Boolean(profileMenuAnchor)}
@@ -270,36 +287,20 @@ export const CustomAppBarSPA: React.FC<AppBarSPAProps> = ({
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem
-          onClick={() => {
-            handleNavigation('profile');
-            handleProfileMenuClose();
-          }}
-        >
+        <MenuItem onClick={() => onViewChange('perfil')}>
           <Person sx={{ mr: 1 }} />
           Mi Perfil
         </MenuItem>
-        <MenuItem
-          onClick={() => {
-            handleNavigation('history');
-            handleProfileMenuClose();
-          }}
-        >
+        <MenuItem onClick={() => onViewChange('historial')}>
           <HistoryIcon sx={{ mr: 1 }} />
           Mi Progreso
         </MenuItem>
-        <MenuItem
-          onClick={() => {
-            handleNavigation('settings');
-            handleProfileMenuClose();
-          }}
-        >
+        <MenuItem onClick={() => onViewChange('configuraciones')}>
           <SettingsIcon sx={{ mr: 1 }} />
           Configuración
         </MenuItem>
       </Menu>
 
-      {/* Menú de configuraciones */}
       <Menu
         anchorEl={settingsMenuAnchor}
         open={Boolean(settingsMenuAnchor)}
@@ -316,21 +317,11 @@ export const CustomAppBarSPA: React.FC<AppBarSPAProps> = ({
           )}
           {isDarkMode ? 'Tema Claro' : 'Tema Oscuro'}
         </MenuItem>
-        <MenuItem
-          onClick={() => {
-            handleNavigation('help');
-            handleSettingsMenuClose();
-          }}
-        >
+        <MenuItem onClick={() => onViewChange('ayuda')}>
           <HelpIcon sx={{ mr: 1 }} />
           Centro de Ayuda
         </MenuItem>
-        <MenuItem
-          onClick={() => {
-            handleNavigation('settings');
-            handleSettingsMenuClose();
-          }}
-        >
+        <MenuItem onClick={() => onViewChange('configuraciones')}>
           <SettingsIcon sx={{ mr: 1 }} />
           Configuraciones Avanzadas
         </MenuItem>

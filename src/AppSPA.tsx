@@ -4,6 +4,8 @@ import { ViewType } from './views/ViewManager';
 import { CustomAppBarSPA } from './shared/components/organisms/AppBar/AppBarSPA';
 import { NavigationDrawerSPA } from './shared/components/organisms/Drawer/NavigationDrawerSPA';
 import { DashboardView } from './views/Dashboard/DashboardView';
+import { HomeView } from './views/HomeView/HomeView';
+
 // import { ExercisesView } from './views/Exercises/ExercisesView';
 // import { HistoryView } from './views/History/HistoryView';
 // import { ProfileView } from './views/Profile/ProfileView';
@@ -11,7 +13,7 @@ import { DashboardView } from './views/Dashboard/DashboardView';
 // import { HelpView } from './views/Help/HelpView';
 
 export const AppSPA: React.FC = () => {
-  const [currentView, setCurrentView] = useState<ViewType>('dashboard');
+  const [currentView, setCurrentView] = useState<ViewType>('home');
   const [drawerOpen, setDrawerOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -27,6 +29,8 @@ export const AppSPA: React.FC = () => {
 
   const renderView = () => {
     switch (currentView) {
+      case 'home':
+        return <HomeView onNavigate={setCurrentView} />;
       case 'dashboard':
         return <DashboardView onNavigate={setCurrentView} />;
       case 'exercises':

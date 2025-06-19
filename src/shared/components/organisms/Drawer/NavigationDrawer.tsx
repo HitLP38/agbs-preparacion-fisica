@@ -1,3 +1,6 @@
+// ============================================
+// src/shared/components/organisms/Drawer/NavigationDrawer.tsx - ACTUALIZADO PARA SPA
+// ============================================
 import React from 'react';
 import {
   Drawer,
@@ -13,6 +16,7 @@ import {
   useTheme,
 } from '@mui/material';
 import {
+  Home as HomeIcon,
   Dashboard as DashboardIcon,
   FitnessCenter as FitnessCenterIcon,
   History as HistoryIcon,
@@ -22,14 +26,23 @@ import {
   ExitToApp as LogoutIcon,
 } from '@mui/icons-material';
 
-interface NavigationDrawerSPAProps {
+// Importar el tipo desde donde corresponda
+export type ViewType =
+  | 'dashboard'
+  | 'ejercicios'
+  | 'historial'
+  | 'perfil'
+  | 'configuraciones'
+  | 'ayuda';
+
+interface NavigationDrawerProps {
   open: boolean;
   onClose: () => void;
-  currentView: string;
-  onViewChange: (view: string) => void;
+  currentView: ViewType;
+  onViewChange: (view: ViewType) => void;
 }
 
-export const NavigationDrawerSPA: React.FC<NavigationDrawerSPAProps> = ({
+export const NavigationDrawer: React.FC<NavigationDrawerProps> = ({
   open,
   onClose,
   currentView,
@@ -39,19 +52,32 @@ export const NavigationDrawerSPA: React.FC<NavigationDrawerSPAProps> = ({
 
   // Elementos de navegación principal
   const mainNavigationItems = [
-    { label: 'Dashboard', icon: <DashboardIcon />, key: 'dashboard' },
-    { label: 'Ejercicios', icon: <FitnessCenterIcon />, key: 'exercises' },
-    { label: 'Historial', icon: <HistoryIcon />, key: 'history' },
+    { label: 'Home', icon: <HomeIcon />, key: 'home' },
+    {
+      label: 'Dashboard',
+      icon: <DashboardIcon />,
+      key: 'dashboard' as ViewType,
+    },
+    {
+      label: 'Ejercicios',
+      icon: <FitnessCenterIcon />,
+      key: 'ejercicios' as ViewType,
+    },
+    { label: 'Historial', icon: <HistoryIcon />, key: 'historial' as ViewType },
   ];
 
   // Elementos de configuración
   const settingsItems = [
-    { label: 'Mi Perfil', icon: <PersonIcon />, key: 'profile' },
-    { label: 'Configuraciones', icon: <SettingsIcon />, key: 'settings' },
-    { label: 'Ayuda', icon: <HelpIcon />, key: 'help' },
+    { label: 'Mi Perfil', icon: <PersonIcon />, key: 'perfil' as ViewType },
+    {
+      label: 'Configuraciones',
+      icon: <SettingsIcon />,
+      key: 'configuraciones' as ViewType,
+    },
+    { label: 'Ayuda', icon: <HelpIcon />, key: 'ayuda' as ViewType },
   ];
 
-  const handleItemClick = (view: string) => {
+  const handleItemClick = (view: ViewType) => {
     onViewChange(view);
     onClose();
   };
@@ -77,9 +103,11 @@ export const NavigationDrawerSPA: React.FC<NavigationDrawerSPAProps> = ({
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.light} 100%)`,
+          background: `linear-gradient(135deg, #2E3E50 0%, #4A5D75 100%)`,
           color: 'white',
+          cursor: 'pointer',
         }}
+        onClick={() => handleItemClick('home')}
       >
         {/* Logo */}
         <Box
@@ -121,7 +149,7 @@ export const NavigationDrawerSPA: React.FC<NavigationDrawerSPAProps> = ({
           sx={{
             width: 40,
             height: 40,
-            bgcolor: 'primary.main',
+            bgcolor: '#2E3E50',
             fontSize: '1rem',
           }}
         >
@@ -150,16 +178,16 @@ export const NavigationDrawerSPA: React.FC<NavigationDrawerSPAProps> = ({
                   mx: 1,
                   borderRadius: 2,
                   '&.Mui-selected': {
-                    backgroundColor: 'primary.light',
-                    color: 'primary.main',
+                    backgroundColor: '#E9EEED',
+                    color: '#2E3E50',
                     '& .MuiListItemIcon-root': {
-                      color: 'primary.main',
+                      color: '#2E3E50',
                     },
                   },
                   '&:hover': {
-                    backgroundColor: 'primary.light',
+                    backgroundColor: '#E9EEED',
                     '& .MuiListItemIcon-root': {
-                      color: 'primary.main',
+                      color: '#2E3E50',
                     },
                   },
                 }}
@@ -167,9 +195,7 @@ export const NavigationDrawerSPA: React.FC<NavigationDrawerSPAProps> = ({
                 <ListItemIcon
                   sx={{
                     color:
-                      currentView === item.key
-                        ? 'primary.main'
-                        : 'text.secondary',
+                      currentView === item.key ? '#2E3E50' : 'text.secondary',
                     minWidth: 40,
                   }}
                 >
@@ -199,15 +225,15 @@ export const NavigationDrawerSPA: React.FC<NavigationDrawerSPAProps> = ({
                   mx: 1,
                   borderRadius: 2,
                   '&.Mui-selected': {
-                    backgroundColor: 'secondary.light',
+                    backgroundColor: '#E9EEED',
                     '& .MuiListItemIcon-root': {
-                      color: 'primary.main',
+                      color: '#2E3E50',
                     },
                   },
                   '&:hover': {
-                    backgroundColor: 'secondary.light',
+                    backgroundColor: '#E9EEED',
                     '& .MuiListItemIcon-root': {
-                      color: 'primary.main',
+                      color: '#2E3E50',
                     },
                   },
                 }}
@@ -230,7 +256,11 @@ export const NavigationDrawerSPA: React.FC<NavigationDrawerSPAProps> = ({
       {/* Footer del Drawer */}
       <Box sx={{ p: 2, borderTop: `1px solid ${theme.palette.divider}` }}>
         <ListItemButton
-          onClick={() => handleItemClick('logout')}
+          onClick={() => {
+            // Aquí puedes agregar lógica de logout
+            console.log('Logout clicked');
+            onClose();
+          }}
           sx={{
             borderRadius: 2,
             color: 'error.main',

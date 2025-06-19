@@ -13,6 +13,7 @@ import {
   useTheme,
 } from '@mui/material';
 import {
+  Home as HomeIcon,
   Dashboard as DashboardIcon,
   FitnessCenter as FitnessCenterIcon,
   History as HistoryIcon,
@@ -39,6 +40,7 @@ export const NavigationDrawerSPA: React.FC<NavigationDrawerSPAProps> = ({
 
   // Elementos de navegación principal
   const mainNavigationItems = [
+    { label: 'Home', icon: <HomeIcon />, key: 'home' },
     { label: 'Dashboard', icon: <DashboardIcon />, key: 'dashboard' },
     { label: 'Ejercicios', icon: <FitnessCenterIcon />, key: 'exercises' },
     { label: 'Historial', icon: <HistoryIcon />, key: 'history' },
