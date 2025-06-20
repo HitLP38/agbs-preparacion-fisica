@@ -1,6 +1,7 @@
 // src/app/context/AuthContext.tsx
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useUser as useClerkUser } from '@clerk/clerk-react';
 import { User } from '@/domain/entities/User';
 import { Gender, Grade } from '@/domain/entities/Exercise';
 
@@ -19,7 +20,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [user, setUser] = useState<User | null>(null);
 
-  // Cargar usuario desde localStorage al iniciar
+  // 🟢 Clerk hook: usuario autenticado
+  const { user: clerkUser } = useClerkUser();
+
+  // Cargar desde localStorage si existe
   useEffect(() => {
     const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (stored) {
@@ -27,13 +31,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, []);
 
-  // Guardar usuario en localStorage al hacer login
+  // 🟢 Sincronizar automáticamente cuando Clerk inicie sesión
+  useEffect(() => {
+    if (clerkUser) {
+      const mappedUser: User = {
+        id: clerkUser.id,
+        name: clerkUser.fullName || 'Usuario',
+        email: clerkUser.emailAddresses[0]?.emailAddress || '',
+        gender: Gender.MALE, //  Enum correcto
+        grade: Grade.FIRST, //  Enum correcto
+      };
+
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(mappedUser));
+      setUser(mappedUser);
+    }
+  }, [clerkUser]);
+
+  // Iniciar sesión manualmente (usado en formulario personalizado si lo necesitas)
   const login = (userData: User) => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(userData));
     setUser(userData);
   };
 
-  // Cerrar sesión
+  // Cerrar sesión manual (esto no cierra Clerk, solo tu estado local)
   const logout = () => {
     localStorage.removeItem(LOCAL_STORAGE_KEY);
     setUser(null);
@@ -46,7 +66,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-// Hook personalizado para usar el contexto
+// Hook personalizado para acceder al contexto
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {

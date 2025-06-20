@@ -17,9 +17,13 @@ export const SimulationHistoryView: React.FC = () => {
 
   // Cargar simulaciones al montar el componente
   useEffect(() => {
-    const repo = new LocalSimulationRepository();
-    const sims = repo.getAll();
-    setRecords(sims);
+    const fetchSimulations = async () => {
+      const repo = new LocalSimulationRepository();
+      const sims = await repo.getAll(); // aquí usamos await
+      setRecords(sims);
+    };
+
+    fetchSimulations();
   }, []);
 
   return (

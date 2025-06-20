@@ -10,6 +10,7 @@ import { User } from '@/domain/entities/User';
 import { Gender, Grade } from '@/domain/entities/Exercise';
 import { LoginView } from '@/views/Auth/LoginView';
 import { useAuth } from '@/app/context/AuthContext';
+import { SimulationHistoryView } from '@/views/History/SimulationHistoryView';
 
 // import { ExercisesView } from './views/Exercises/ExercisesView';
 // import { HistoryView } from './views/History/HistoryView';
@@ -62,7 +63,7 @@ export const AppSPA: React.FC = () => {
           </Box>
         );
       case 'history':
-        return <HistoryView user={currentUser} />;
+        return <HistoryView />;
 
       case 'profile':
         return (

@@ -23,7 +23,6 @@
       "@domain/*": ["domain/*"],
       "@infrastructure/*": ["infrastructure/*"],
       "@app/*": ["app/*"],
-      "@pages/*": ["pages/*"],
       "@views/*": ["views/*"],
       "@components/*": ["shared/components/*"]
     }
