@@ -1,20 +1,23 @@
+// src/main.tsx
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-// import { AppRouter } from '@app/routes/AppRouter'; // Comentar
-import { AppSPA } from './AppSPA'; // Nuevo
+import { ClerkProvider } from '@clerk/clerk-react';
+import { AppSPA } from './AppSPA'; // Tu componente SPA principal
 import { CustomThemeProvider } from '@shared/theme/ThemeProvider';
 
-import '@fontsource/montserrat/300.css';
-import '@fontsource/montserrat/400.css';
-import '@fontsource/montserrat/500.css';
-import '@fontsource/montserrat/600.css';
-import '@fontsource/montserrat/700.css';
+const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+
+if (!PUBLISHABLE_KEY) {
+  throw new Error('Falta Clerk Publishable Key');
+}
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <CustomThemeProvider>
-      {/* <AppRouter /> */}
-      <AppSPA />
-    </CustomThemeProvider>
+    <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+      <CustomThemeProvider>
+        <AppSPA />
+      </CustomThemeProvider>
+    </ClerkProvider>
   </React.StrictMode>
 );

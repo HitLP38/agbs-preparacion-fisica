@@ -1,3 +1,5 @@
+// src/shared/components/organisms/Drawer/NavigationDrawerSPA.tsx
+
 import React from 'react';
 import {
   Drawer,
@@ -12,6 +14,7 @@ import {
   Avatar,
   useTheme,
 } from '@mui/material';
+
 import {
   Home as HomeIcon,
   Dashboard as DashboardIcon,
@@ -20,8 +23,10 @@ import {
   Person as PersonIcon,
   Settings as SettingsIcon,
   Help as HelpIcon,
-  ExitToApp as LogoutIcon,
+  Logout as LogoutIcon,
 } from '@mui/icons-material';
+
+import { useAuth } from '@/app/context/AuthContext';
 
 interface NavigationDrawerSPAProps {
   open: boolean;
@@ -37,8 +42,9 @@ export const NavigationDrawerSPA: React.FC<NavigationDrawerSPAProps> = ({
   onViewChange,
 }) => {
   const theme = useTheme();
+  const { user, logout } = useAuth(); // 👈 Acceder al usuario logueado
 
-  // Elementos de navegación principal
+  // Opciones principales de navegación
   const mainNavigationItems = [
     { label: 'Home', icon: <HomeIcon />, key: 'home' },
     { label: 'Dashboard', icon: <DashboardIcon />, key: 'dashboard' },
@@ -46,13 +52,14 @@ export const NavigationDrawerSPA: React.FC<NavigationDrawerSPAProps> = ({
     { label: 'Historial', icon: <HistoryIcon />, key: 'history' },
   ];
 
-  // Elementos de configuración
+  // Opciones secundarias
   const settingsItems = [
     { label: 'Mi Perfil', icon: <PersonIcon />, key: 'profile' },
     { label: 'Configuraciones', icon: <SettingsIcon />, key: 'settings' },
     { label: 'Ayuda', icon: <HelpIcon />, key: 'help' },
   ];
 
+  // Navegar y cerrar el Drawer
   const handleItemClick = (view: string) => {
     onViewChange(view);
     onClose();
@@ -72,7 +79,7 @@ export const NavigationDrawerSPA: React.FC<NavigationDrawerSPAProps> = ({
         },
       }}
     >
-      {/* Header del Drawer */}
+      {/* Encabezado con logo */}
       <Box
         sx={{
           p: 3,
@@ -83,7 +90,6 @@ export const NavigationDrawerSPA: React.FC<NavigationDrawerSPAProps> = ({
           color: 'white',
         }}
       >
-        {/* Logo */}
         <Box
           sx={{
             width: 48,
@@ -109,7 +115,7 @@ export const NavigationDrawerSPA: React.FC<NavigationDrawerSPAProps> = ({
         </Typography>
       </Box>
 
-      {/* Perfil del usuario */}
+      {/* Perfil del usuario logueado */}
       <Box
         sx={{
           p: 2,
@@ -127,21 +133,21 @@ export const NavigationDrawerSPA: React.FC<NavigationDrawerSPAProps> = ({
             fontSize: '1rem',
           }}
         >
-          U
+          {user?.name?.charAt(0).toUpperCase() || 'U'}
         </Avatar>
+
         <Box>
           <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-            Usuario
+            {user?.name || 'Usuario'}
           </Typography>
           <Typography variant="caption" color="text.secondary">
-            Aspirante AGBS
+            {user?.grade || 'Sin grado'}
           </Typography>
         </Box>
       </Box>
 
-      {/* Lista de navegación */}
+      {/* Navegación principal */}
       <Box sx={{ flex: 1, overflow: 'auto' }}>
-        {/* Navegación principal */}
         <List sx={{ pt: 1 }}>
           {mainNavigationItems.map((item) => (
             <ListItem key={item.key} disablePadding>
@@ -190,7 +196,7 @@ export const NavigationDrawerSPA: React.FC<NavigationDrawerSPAProps> = ({
 
         <Divider sx={{ mx: 2, my: 1 }} />
 
-        {/* Configuraciones */}
+        {/* Opciones secundarias */}
         <List>
           {settingsItems.map((item) => (
             <ListItem key={item.key} disablePadding>
@@ -214,12 +220,7 @@ export const NavigationDrawerSPA: React.FC<NavigationDrawerSPAProps> = ({
                   },
                 }}
               >
-                <ListItemIcon
-                  sx={{
-                    color: 'text.secondary',
-                    minWidth: 40,
-                  }}
-                >
+                <ListItemIcon sx={{ color: 'text.secondary', minWidth: 40 }}>
                   {item.icon}
                 </ListItemIcon>
                 <ListItemText primary={item.label} />
@@ -229,10 +230,13 @@ export const NavigationDrawerSPA: React.FC<NavigationDrawerSPAProps> = ({
         </List>
       </Box>
 
-      {/* Footer del Drawer */}
+      {/* Botón Cerrar Sesión */}
       <Box sx={{ p: 2, borderTop: `1px solid ${theme.palette.divider}` }}>
         <ListItemButton
-          onClick={() => handleItemClick('logout')}
+          onClick={() => {
+            logout(); // ✅ limpia el contexto
+            onViewChange('login'); // ✅ redirige a login
+          }}
           sx={{
             borderRadius: 2,
             color: 'error.main',

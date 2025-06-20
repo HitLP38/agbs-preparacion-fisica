@@ -23,7 +23,9 @@
       "@domain/*": ["domain/*"],
       "@infrastructure/*": ["infrastructure/*"],
       "@app/*": ["app/*"],
-      "@pages/*": ["pages/*"]
+      "@pages/*": ["pages/*"],
+      "@views/*": ["views/*"],
+      "@components/*": ["shared/components/*"]
     }
   },
   "include": ["src", "tests"],

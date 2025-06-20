@@ -27,13 +27,16 @@ import {
 } from '@mui/icons-material';
 import { useCustomTheme } from '../../../theme/ThemeProvider';
 
+// Clerk
+import { useUser, UserButton, SignInButton } from '@clerk/clerk-react';
+
 interface AppBarSPAProps {
   onMenuClick: () => void;
   currentView: string;
   onViewChange: (view: string) => void;
 }
 
-export const CustomAppBarSPA: React.FC<AppBarSPAProps> = ({
+export const AppBarSPA: React.FC<AppBarSPAProps> = ({
   onMenuClick,
   currentView,
   onViewChange,
@@ -42,7 +45,10 @@ export const CustomAppBarSPA: React.FC<AppBarSPAProps> = ({
   const { isDarkMode, toggleTheme } = useCustomTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  // Estados para menús
+  // Clerk: Obtener usuario logueado sin conflicto
+  const { user: clerkUser } = useUser();
+
+  // Menús desplegables
   const [profileMenuAnchor, setProfileMenuAnchor] =
     useState<null | HTMLElement>(null);
   const [settingsMenuAnchor, setSettingsMenuAnchor] =
@@ -64,7 +70,7 @@ export const CustomAppBarSPA: React.FC<AppBarSPAProps> = ({
     setSettingsMenuAnchor(null);
   };
 
-  // Navegación principal ACTUALIZADA con Home primero
+  // Ítems principales del AppBar
   const navigationItems = [
     { label: 'Home', icon: <HomeIcon />, key: 'home' },
     { label: 'Dashboard', icon: <DashboardIcon />, key: 'dashboard' },
@@ -78,7 +84,7 @@ export const CustomAppBarSPA: React.FC<AppBarSPAProps> = ({
 
   return (
     <>
-      {/* Header principal con fondo E9EEED */}
+      {/* AppBar Superior */}
       <AppBar
         position="fixed"
         elevation={0}
@@ -88,9 +94,8 @@ export const CustomAppBarSPA: React.FC<AppBarSPAProps> = ({
         }}
       >
         <Toolbar sx={{ justifyContent: 'space-between', py: 1 }}>
-          {/* Lado izquierdo - Logo + Nombre */}
+          {/* Logo + Nombre */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            {/* Menú hamburguesa (móvil) */}
             {isMobile && (
               <IconButton
                 edge="start"
@@ -102,7 +107,6 @@ export const CustomAppBarSPA: React.FC<AppBarSPAProps> = ({
               </IconButton>
             )}
 
-            {/* Logo + Nombre */}
             <Box
               sx={{
                 display: 'flex',
@@ -143,14 +147,10 @@ export const CustomAppBarSPA: React.FC<AppBarSPAProps> = ({
             </Box>
           </Box>
 
-          {/* Lado derecho - Utilidades + Perfil */}
+          {/* Lado derecho: Botones + Usuario */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            {/* Toggle tema */}
-            <Tooltip
-              title={
-                isDarkMode ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'
-              }
-            >
+            {/* Tema claro/oscuro */}
+            <Tooltip title={isDarkMode ? 'Tema claro' : 'Tema oscuro'}>
               <IconButton onClick={toggleTheme} sx={{ color: '#2E3E50' }}>
                 {isDarkMode ? <LightMode /> : <DarkMode />}
               </IconButton>
@@ -176,22 +176,28 @@ export const CustomAppBarSPA: React.FC<AppBarSPAProps> = ({
               </IconButton>
             </Tooltip>
 
-            {/* Perfil + Nombre */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 1 }}>
-              <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: '#2E3E50',
-                    fontWeight: 500,
-                    fontSize: '0.9rem',
-                  }}
-                >
-                  Usuario
-                </Typography>
-              </Box>
-              <Tooltip title="Perfil">
-                <IconButton onClick={handleProfileMenuOpen}>
+            {/* Nombre del usuario logueado o por defecto */}
+            <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: '#2E3E50',
+                  fontWeight: 500,
+                  fontSize: '0.9rem',
+                }}
+              >
+                {clerkUser?.fullName ||
+                  clerkUser?.primaryEmailAddress?.emailAddress ||
+                  'Usuario'}
+              </Typography>
+            </Box>
+
+            {/* Avatar o botón de login */}
+            {clerkUser ? (
+              <UserButton />
+            ) : (
+              <SignInButton mode="modal">
+                <IconButton>
                   <Avatar
                     sx={{
                       width: 32,
@@ -203,13 +209,13 @@ export const CustomAppBarSPA: React.FC<AppBarSPAProps> = ({
                     U
                   </Avatar>
                 </IconButton>
-              </Tooltip>
-            </Box>
+              </SignInButton>
+            )}
           </Box>
         </Toolbar>
       </AppBar>
 
-      {/* Barra de navegación con fondo 2E3E50 */}
+      {/* Barra de navegación secundaria */}
       <AppBar
         position="fixed"
         elevation={1}
@@ -220,8 +226,7 @@ export const CustomAppBarSPA: React.FC<AppBarSPAProps> = ({
         }}
       >
         <Toolbar sx={{ minHeight: '48px !important', px: 3 }}>
-          {/* Navegación principal (desktop) */}
-          {!isMobile && (
+          {!isMobile ? (
             <Box sx={{ display: 'flex', gap: 0.5 }}>
               {navigationItems.map((item) => (
                 <Button
@@ -252,10 +257,7 @@ export const CustomAppBarSPA: React.FC<AppBarSPAProps> = ({
                 </Button>
               ))}
             </Box>
-          )}
-
-          {/* En móvil, mostrar solo la página actual */}
-          {isMobile && (
+          ) : (
             <Typography
               variant="body1"
               sx={{
@@ -270,81 +272,6 @@ export const CustomAppBarSPA: React.FC<AppBarSPAProps> = ({
           )}
         </Toolbar>
       </AppBar>
-
-      {/* Menú de perfil */}
-      <Menu
-        anchorEl={profileMenuAnchor}
-        open={Boolean(profileMenuAnchor)}
-        onClose={handleProfileMenuClose}
-        onClick={handleProfileMenuClose}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-      >
-        <MenuItem
-          onClick={() => {
-            handleNavigation('profile');
-            handleProfileMenuClose();
-          }}
-        >
-          <Person sx={{ mr: 1 }} />
-          Mi Perfil
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            handleNavigation('history');
-            handleProfileMenuClose();
-          }}
-        >
-          <HistoryIcon sx={{ mr: 1 }} />
-          Mi Progreso
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            handleNavigation('settings');
-            handleProfileMenuClose();
-          }}
-        >
-          <SettingsIcon sx={{ mr: 1 }} />
-          Configuración
-        </MenuItem>
-      </Menu>
-
-      {/* Menú de configuraciones */}
-      <Menu
-        anchorEl={settingsMenuAnchor}
-        open={Boolean(settingsMenuAnchor)}
-        onClose={handleSettingsMenuClose}
-        onClick={handleSettingsMenuClose}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-      >
-        <MenuItem onClick={toggleTheme}>
-          {isDarkMode ? (
-            <LightMode sx={{ mr: 1 }} />
-          ) : (
-            <DarkMode sx={{ mr: 1 }} />
-          )}
-          {isDarkMode ? 'Tema Claro' : 'Tema Oscuro'}
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            handleNavigation('help');
-            handleSettingsMenuClose();
-          }}
-        >
-          <HelpIcon sx={{ mr: 1 }} />
-          Centro de Ayuda
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            handleNavigation('settings');
-            handleSettingsMenuClose();
-          }}
-        >
-          <SettingsIcon sx={{ mr: 1 }} />
-          Configuraciones Avanzadas
-        </MenuItem>
-      </Menu>
     </>
   );
 };

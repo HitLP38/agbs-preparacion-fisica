@@ -14,8 +14,12 @@ export default defineConfig({
       '@infrastructure': resolve(__dirname, './src/infrastructure'),
       '@app': resolve(__dirname, './src/app'),
       '@pages': resolve(__dirname, './src/pages'),
+      '@views': resolve(__dirname, './src/views'),
+      '@components': resolve(__dirname, './src/shared/components'),
     },
   },
+  // Puedes descomentar esto más adelante si usas carga dividida por rutas
+  /*
   build: {
     rollupOptions: {
       output: {
@@ -26,4 +30,5 @@ export default defineConfig({
       },
     },
   },
+  */
 });

@@ -9,7 +9,8 @@ export type ViewType =
   | 'history'
   | 'profile'
   | 'settings'
-  | 'help';
+  | 'help'
+  | 'login';
 
 interface ViewManagerProps {
   children: (

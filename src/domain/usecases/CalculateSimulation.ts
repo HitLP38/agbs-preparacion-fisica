@@ -1,7 +1,36 @@
-import { ExerciseType, Gender, Grade } from '../entities/Exercise';
-import { ExerciseResult, SimulationData } from '../entities/Simulation';
-import { BaremoService } from '../services/BaremoService';
-export class CalculateSimulationUseCase {
+// src/domain/usecases/CalculateSimulation.ts
+
+import { ExerciseType, Gender, Grade } from '@/domain/entities/Exercise';
+import {
+  calcularPuntos,
+  isApto,
+  pointsToNote,
+} from '@/domain/services/BaremoService';
+
+// Resultado individual de un ejercicio
+export interface ExerciseResult {
+  exerciseType: ExerciseType;
+  gender: Gender;
+  grade: Grade;
+  value: number;
+  points: number;
+  note: number;
+  isApto: boolean;
+}
+
+// Resultado de una simulación completa
+export interface SimulationData {
+  id: string;
+  timestamp: Date;
+  gender: Gender;
+  grade: Grade;
+  results: ExerciseResult[];
+  totalPoints: number;
+  averageNote: number;
+  isGlobalApto: boolean;
+}
+
+export class CalculateSimulation {
   static execute(
     exercises: Array<{
       type: ExerciseType;
@@ -11,11 +40,11 @@ export class CalculateSimulationUseCase {
     grade: Grade
   ): SimulationData {
     const results: ExerciseResult[] = exercises.map((exercise) => {
-      const points = BaremoService.calculatePoints(
+      const points = calcularPuntos(
         exercise.type,
+        exercise.value.toString(),
         gender,
-        grade,
-        exercise.value
+        grade
       );
 
       return {
@@ -24,15 +53,15 @@ export class CalculateSimulationUseCase {
         grade,
         value: exercise.value,
         points,
-        isApto: BaremoService.isApto(points),
-        note: BaremoService.pointsToNote(points),
+        note: pointsToNote(points),
+        isApto: isApto(points),
       };
     });
 
-    const totalPoints = results.reduce((sum, result) => sum + result.points, 0);
+    const totalPoints = results.reduce((acc, r) => acc + r.points, 0);
     const averageNote =
-      results.reduce((sum, result) => sum + result.note, 0) / results.length;
-    const isGlobalApto = results.every((result) => result.isApto);
+      results.reduce((acc, r) => acc + r.note, 0) / results.length;
+    const isGlobalApto = results.every((r) => r.isApto);
 
     return {
       id: crypto.randomUUID(),
@@ -41,7 +70,7 @@ export class CalculateSimulationUseCase {
       grade,
       results,
       totalPoints,
-      averageNote: Number(averageNote.toFixed(4)),
+      averageNote: Number(averageNote.toFixed(2)),
       isGlobalApto,
     };
   }
