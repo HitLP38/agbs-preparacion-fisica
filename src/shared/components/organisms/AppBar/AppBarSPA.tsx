@@ -180,19 +180,25 @@ export const AppBarSPA: React.FC<AppBarSPAProps> = ({
             </SignedIn>
 
             <SignedOut>
-              <SignInButton mode="modal">
-                <IconButton>
-                  <Avatar
-                    sx={{
-                      width: 32,
-                      height: 32,
-                      bgcolor: '#2E3E50',
-                      fontSize: '0.9rem',
-                    }}
-                  >
-                    U
-                  </Avatar>
-                </IconButton>
+              {/* The SignInButton will pass its onClick to the child IconButton.
+                  Adding fallbackRedirectUrl for robustness.
+                  Wrapping with Tooltip for better UX.
+                  Using component="span" on IconButton as it can sometimes help with complex nesting. */}
+              <SignInButton mode="modal" fallbackRedirectUrl="/dashboard">
+                <Tooltip title="Iniciar Sesión">
+                  <IconButton component="span" aria-label="sign in button">
+                    <Avatar
+                      sx={{
+                        width: 32,
+                        height: 32,
+                        bgcolor: '#2E3E50',
+                        fontSize: '0.9rem',
+                      }}
+                    >
+                      U
+                    </Avatar>
+                  </IconButton>
+                </Tooltip>
               </SignInButton>
             </SignedOut>
           </Box>
