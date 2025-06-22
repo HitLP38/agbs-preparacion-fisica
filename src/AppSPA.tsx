@@ -1,53 +1,47 @@
+// src/AppSPA.tsx
+
 import React, { useEffect, useState } from 'react';
 import { Box, useMediaQuery, useTheme } from '@mui/material';
+
 import { ViewType } from './views/ViewManager';
 import { AppBarSPA } from './shared/components/organisms/AppBar/AppBarSPA';
 import { NavigationDrawerSPA } from './shared/components/organisms/Drawer/NavigationDrawerSPA';
-import { DashboardView } from './views/Dashboard/DashboardView';
-import { HomeView } from './views/HomeView/HomeView';
-import { HistoryView } from '@/views/History/HistoryView';
-import { User } from '@/domain/entities/User';
-import { Gender, Grade } from '@/domain/entities/Exercise';
-import { LoginView } from '@/views/Auth/LoginView';
-import { useAuth } from '@/app/context/AuthContext';
-import { SimulationHistoryView } from '@/views/History/SimulationHistoryView';
 
-// import { ExercisesView } from './views/Exercises/ExercisesView';
-// import { HistoryView } from './views/History/HistoryView';
-// import { ProfileView } from './views/Profile/ProfileView';
-// import { SettingsView } from './views/Settings/SettingsView';
-// import { HelpView } from './views/Help/HelpView';
+import { HomeView } from './views/HomeView/HomeView';
+import { DashboardView } from './views/Dashboard/DashboardView';
+import { HistoryView } from './views/History/HistoryView';
+import { LoginView } from './views/Auth/LoginView';
+
+import { useAuth } from '@/app/context/AuthContext';
+import { Gender, Grade } from '@/domain/entities/Exercise';
+import { User } from '@/domain/entities/User';
 
 export const AppSPA: React.FC = () => {
   const [currentView, setCurrentView] = useState<ViewType>('home');
   const [drawerOpen, setDrawerOpen] = useState(false);
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
   };
-  const currentUser: User = {
-    id: 'user-001',
-    name: 'Usuario Demo',
-    gender: Gender.MALE,
-    grade: Grade.FIRST,
-  };
 
   const handleViewChange = (view: string) => {
     setCurrentView(view as ViewType);
     setDrawerOpen(false);
   };
-  //si el usuario no está logueado, redirígelo
+
   const { user } = useAuth();
 
-  // Redirige automáticamente si no está logueado
+  // 🔒 Redirección automática al login si no está logueado
   useEffect(() => {
     if (!user && currentView !== 'login') {
       setCurrentView('login');
     }
   }, [user, currentView]);
 
+  // Renderizador de vistas
   const renderView = () => {
     switch (currentView) {
       case 'login':
@@ -55,7 +49,7 @@ export const AppSPA: React.FC = () => {
       case 'home':
         return <HomeView onNavigate={setCurrentView} />;
       case 'dashboard':
-        return <DashboardView onNavigate={setCurrentView} />;
+        return <DashboardView />;
       case 'exercises':
         return (
           <Box>
@@ -64,7 +58,6 @@ export const AppSPA: React.FC = () => {
         );
       case 'history':
         return <HistoryView />;
-
       case 'profile':
         return (
           <Box>
@@ -84,18 +77,20 @@ export const AppSPA: React.FC = () => {
           </Box>
         );
       default:
-        return <DashboardView onNavigate={setCurrentView} />;
+        return <DashboardView />;
     }
   };
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+      {/* AppBar principal */}
       <AppBarSPA
         onMenuClick={handleDrawerToggle}
         currentView={currentView}
         onViewChange={handleViewChange}
       />
 
+      {/* Menú lateral */}
       <NavigationDrawerSPA
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
@@ -103,6 +98,7 @@ export const AppSPA: React.FC = () => {
         onViewChange={handleViewChange}
       />
 
+      {/* Contenido principal */}
       <Box
         component="main"
         sx={{

@@ -17,7 +17,7 @@ import {
 } from '@mui/icons-material';
 import { ViewType } from '../ViewManager';
 
-interface HomeViewProps {
+export interface HomeViewProps {
   onNavigate: (view: ViewType) => void;
 }
 

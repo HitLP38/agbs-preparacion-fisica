@@ -23,12 +23,17 @@ import {
   Help as HelpIcon,
   LightMode,
   DarkMode,
-  Person,
 } from '@mui/icons-material';
 import { useCustomTheme } from '../../../theme/ThemeProvider';
 
-// Clerk
-import { useUser, UserButton, SignInButton } from '@clerk/clerk-react';
+// Clerk Auth
+import {
+  useUser,
+  SignedIn,
+  SignedOut,
+  UserButton,
+  SignInButton,
+} from '@clerk/clerk-react';
 
 interface AppBarSPAProps {
   onMenuClick: () => void;
@@ -45,32 +50,19 @@ export const AppBarSPA: React.FC<AppBarSPAProps> = ({
   const { isDarkMode, toggleTheme } = useCustomTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  // Clerk: Obtener usuario logueado sin conflicto
   const { user: clerkUser } = useUser();
 
-  // Menús desplegables
+  // Menús de perfil y configuración
   const [profileMenuAnchor, setProfileMenuAnchor] =
     useState<null | HTMLElement>(null);
   const [settingsMenuAnchor, setSettingsMenuAnchor] =
     useState<null | HTMLElement>(null);
 
-  const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setProfileMenuAnchor(event.currentTarget);
-  };
+  const handleSettingsMenuOpen = (e: React.MouseEvent<HTMLElement>) =>
+    setSettingsMenuAnchor(e.currentTarget);
+  const handleSettingsMenuClose = () => setSettingsMenuAnchor(null);
 
-  const handleProfileMenuClose = () => {
-    setProfileMenuAnchor(null);
-  };
-
-  const handleSettingsMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setSettingsMenuAnchor(event.currentTarget);
-  };
-
-  const handleSettingsMenuClose = () => {
-    setSettingsMenuAnchor(null);
-  };
-
-  // Ítems principales del AppBar
+  // Vistas disponibles
   const navigationItems = [
     { label: 'Home', icon: <HomeIcon />, key: 'home' },
     { label: 'Dashboard', icon: <DashboardIcon />, key: 'dashboard' },
@@ -78,13 +70,9 @@ export const AppBarSPA: React.FC<AppBarSPAProps> = ({
     { label: 'Historial', icon: <HistoryIcon />, key: 'history' },
   ];
 
-  const handleNavigation = (view: string) => {
-    onViewChange(view);
-  };
-
   return (
     <>
-      {/* AppBar Superior */}
+      {/* 🟦 Barra superior */}
       <AppBar
         position="fixed"
         elevation={0}
@@ -94,14 +82,13 @@ export const AppBarSPA: React.FC<AppBarSPAProps> = ({
         }}
       >
         <Toolbar sx={{ justifyContent: 'space-between', py: 1 }}>
-          {/* Logo + Nombre */}
+          {/* Logo + Título */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             {isMobile && (
               <IconButton
                 edge="start"
-                sx={{ color: '#2E3E50' }}
-                aria-label="menu"
                 onClick={onMenuClick}
+                sx={{ color: '#2E3E50' }}
               >
                 <MenuIcon />
               </IconButton>
@@ -114,7 +101,7 @@ export const AppBarSPA: React.FC<AppBarSPAProps> = ({
                 gap: 1.5,
                 cursor: 'pointer',
               }}
-              onClick={() => handleNavigation('home')}
+              onClick={() => onViewChange('home')}
             >
               <Box
                 sx={{
@@ -134,22 +121,19 @@ export const AppBarSPA: React.FC<AppBarSPAProps> = ({
               </Box>
               <Typography
                 variant="h6"
-                component="div"
-                sx={{
-                  fontWeight: 700,
-                  color: '#2E3E50',
-                  fontSize: '1.2rem',
-                  display: { xs: 'none', sm: 'block' },
-                }}
+                fontWeight={700}
+                color="#2E3E50"
+                fontSize="1.2rem"
+                sx={{ display: { xs: 'none', sm: 'block' } }}
               >
                 RetoAGBS
               </Typography>
             </Box>
           </Box>
 
-          {/* Lado derecho: Botones + Usuario */}
+          {/* 🟨 Utilidades lado derecho */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            {/* Tema claro/oscuro */}
+            {/* Toggle de tema */}
             <Tooltip title={isDarkMode ? 'Tema claro' : 'Tema oscuro'}>
               <IconButton onClick={toggleTheme} sx={{ color: '#2E3E50' }}>
                 {isDarkMode ? <LightMode /> : <DarkMode />}
@@ -159,43 +143,43 @@ export const AppBarSPA: React.FC<AppBarSPAProps> = ({
             {/* Ayuda */}
             <Tooltip title="Ayuda">
               <IconButton
+                onClick={() => onViewChange('help')}
                 sx={{ color: '#2E3E50' }}
-                onClick={() => handleNavigation('help')}
               >
                 <HelpIcon />
               </IconButton>
             </Tooltip>
 
-            {/* Configuraciones */}
+            {/* Configuración */}
             <Tooltip title="Configuraciones">
               <IconButton
-                sx={{ color: '#2E3E50' }}
                 onClick={handleSettingsMenuOpen}
+                sx={{ color: '#2E3E50' }}
               >
                 <SettingsIcon />
               </IconButton>
             </Tooltip>
 
-            {/* Nombre del usuario logueado o por defecto */}
-            <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-              <Typography
-                variant="body2"
-                sx={{
-                  color: '#2E3E50',
-                  fontWeight: 500,
-                  fontSize: '0.9rem',
-                }}
-              >
-                {clerkUser?.fullName ||
-                  clerkUser?.primaryEmailAddress?.emailAddress ||
-                  'Usuario'}
-              </Typography>
-            </Box>
+            {/* Usuario: Mostrar nombre o correo */}
+            {clerkUser && (
+              <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+                <Typography
+                  variant="body2"
+                  sx={{ color: '#2E3E50', fontWeight: 500, fontSize: '0.9rem' }}
+                >
+                  {clerkUser.fullName ||
+                    clerkUser.primaryEmailAddress?.emailAddress ||
+                    'Usuario'}
+                </Typography>
+              </Box>
+            )}
 
-            {/* Avatar o botón de login */}
-            {clerkUser ? (
+            {/* Usuario: Sesión */}
+            <SignedIn>
               <UserButton />
-            ) : (
+            </SignedIn>
+
+            <SignedOut>
               <SignInButton mode="modal">
                 <IconButton>
                   <Avatar
@@ -210,12 +194,12 @@ export const AppBarSPA: React.FC<AppBarSPAProps> = ({
                   </Avatar>
                 </IconButton>
               </SignInButton>
-            )}
+            </SignedOut>
           </Box>
         </Toolbar>
       </AppBar>
 
-      {/* Barra de navegación secundaria */}
+      {/* 🟫 Barra inferior de navegación */}
       <AppBar
         position="fixed"
         elevation={1}
@@ -232,7 +216,7 @@ export const AppBarSPA: React.FC<AppBarSPAProps> = ({
                 <Button
                   key={item.key}
                   startIcon={item.icon}
-                  onClick={() => handleNavigation(item.key)}
+                  onClick={() => onViewChange(item.key)}
                   sx={{
                     color:
                       currentView === item.key
@@ -266,8 +250,8 @@ export const AppBarSPA: React.FC<AppBarSPAProps> = ({
                 textTransform: 'capitalize',
               }}
             >
-              {navigationItems.find((item) => item.key === currentView)
-                ?.label || 'Home'}
+              {navigationItems.find((i) => i.key === currentView)?.label ||
+                'Home'}
             </Typography>
           )}
         </Toolbar>
