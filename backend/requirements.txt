@@ -1,0 +1,12 @@
+fastapi[all]
+uvicorn[standard]
+sqlalchemy
+psycopg2-binary
+pydantic
+pydantic-settings
+python-jose[cryptography] # For JWT handling with Clerk
+# Add other dependencies as needed, e.g.:
+# alembic - for database migrations
+# passlib[bcrypt] - if you were to handle passwords directly
+# python-multipart - for file uploads
+# email_validator - for email validation in Pydantic models
